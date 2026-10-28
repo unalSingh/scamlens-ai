@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="neon">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#060814" />
+  <title>ScamLens AI 3D — Advanced Fraud Intelligence & Google Gemini Defense</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/styles.css" />
+  <!-- Three.js (Offline bundled) -->
+  <script src="/three.min.js"></script>
+</head>
+<body>
+  <!-- Ambient 3D canvas backdrop & lighting glow -->
+  <canvas id="bgCanvas3d" class="bg-canvas-3d"></canvas>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+  <div class="cyber-grid-overlay" id="cyberGridOverlay"></div>
+
+  <!-- Header -->
+  <header class="topbar glass tilt-3d" data-tilt="subtle">
+    <div class="card-shine"></div>
+    <div class="top-left">
+      <a class="brand" href="#">
+        <div class="brand-hologram">
+          <div class="holo-cube"></div>
+        </div>
+        <div>
+          <span class="brand-title">SCAM<span class="brand-neon">LENS</span> <span class="badge-version">3D v3.0</span></span>
+          <small class="brand-tagline">GOOGLE GEMINI 3D FRAUD DEFENSE</small>
+        </div>
+      </a>
+    </div>
+
+    <div class="top-actions">
+      <!-- Engine Indicator -->
+      <div class="engine-pill" id="enginePill" title="Active Intelligence Engine">
+        <span class="live-dot" id="liveDot"></span>
+        <span id="engineStatus">INITIALIZING ENGINE…</span>
+      </div>
+
+      <!-- Topbar Language Selector -->
+      <div class="lang-selector-pill" title="Choose Interface & Analysis Language">
+        <span>🌐</span>
+        <select id="topLangSelect" class="lang-select-dropdown" aria-label="Select Language">
+          <option value="en">English</option>
+          <option value="hi">हिन्दी (Hindi)</option>
+          <option value="hinglish">Hinglish</option>
+          <option value="es">Español</option>
+          <option value="fr">Français</option>
+          <option value="de">Deutsch</option>
+          <option value="bn">বাংলা (Bengali)</option>
+          <option value="te">తెలుగు (Telugu)</option>
+          <option value="ta">தமிழ் (Tamil)</option>
+          <option value="mr">मराठी (Marathi)</option>
+          <option value="ar">العربية (Arabic)</option>
+          <option value="zh">中文 (Chinese)</option>
+          <option value="ja">日本語 (Japanese)</option>
+        </select>
+      </div>
+
+      <!-- Step-by-Step How To Use Guide Button -->
+      <button class="topbar-btn primary-glow-btn" id="openHowToUseBtn" aria-label="How to Use ScamLens" title="Step-by-Step Guide">
+        <span class="btn-icon">📖</span>
+        <span class="hide-mobile" data-i18n="btnHowToUse">HOW TO USE</span>
+      </button>
+
+      <!-- 3D Spatial Tilt Toggle -->
+      <button class="topbar-btn" id="tilt3dToggleBtn" aria-label="Toggle 3D Spatial Tilt" title="3D Spatial Card Tilt: Active">
+        <span class="btn-icon">🎛️</span>
+        <span class="hide-mobile" id="tilt3dLabel">3D TILT: ON</span>
+      </button>
+
+      <!-- Quick Audio Toggle -->
+      <button class="icon-toggle" id="soundToggleBtn" aria-label="Toggle Sound Effects" title="Sound FX: Active">
+        <span id="soundIcon">🔊</span>
+      </button>
+
+      <!-- Customizer & Settings Studio Button -->
+      <button class="topbar-btn" id="openSettingsBtn" aria-label="Open Customizer & Settings">
+        <span class="btn-icon">⚡</span>
+        <span class="hide-mobile" data-i18n="btnStudio">STUDIO</span>
+      </button>
+
+      <!-- About Modal -->
+      <button class="icon-toggle" id="aboutBtn" aria-label="About ScamLens" title="About">ⓘ</button>
+    </div>
+  </header>
+
+  <!-- Apple Vision Pro Floating Spatial Dock -->
+  <nav class="vision-spatial-dock" aria-label="Vision Pro Quick Navigation">
+    <div class="spatial-dock-bar">
+      <button class="dock-pill active" id="dockPillText" data-nav-mode="text"><span class="dock-emoji">✍️</span> <span class="dock-label" data-i18n="dockText">Text Scan</span></button>
+      <button class="dock-pill" id="dockPillVision" data-nav-mode="image"><span class="dock-emoji">📸</span> <span class="dock-label" data-i18n="dockVision">Screenshot Vision</span></button>
+      <button class="dock-pill" id="dockPillVoice" data-nav-mode="voice"><span class="dock-emoji">🎙️</span> <span class="dock-label" data-i18n="dockVoice">Voice Forensics</span></button>
+      <button class="dock-pill" id="dockPillUrl" data-nav-target="urlScannerSection"><span class="dock-emoji">🔗</span> <span class="dock-label" data-i18n="dockUrl">URL Scanner</span></button>
+      <button class="dock-pill" id="dockPillPayment" data-nav-target="paymentScannerSection"><span class="dock-emoji">💳</span> <span class="dock-label" data-i18n="dockPayment">UPI / QR Fraud</span></button>
+      <button class="dock-pill" id="dockPillSender" data-nav-target="senderScannerSection"><span class="dock-emoji">📱</span> <span class="dock-label" data-i18n="dockSender">SMS Sender ID</span></button>
+      <button class="dock-pill" id="dockPillHoneypot" data-nav-target="honeypotSection"><span class="dock-emoji">🍯</span> <span class="dock-label" data-i18n="dockHoneypot">Honeypot Lab</span></button>
+      <button class="dock-pill" id="dockPillVault" data-nav-target="vaultSection"><span class="dock-emoji">🔐</span> <span class="dock-label" data-i18n="dockVault">Audit Vault</span></button>
+      <button class="dock-pill" id="dockPillGuide"><span class="dock-emoji">💡</span> <span class="dock-label" data-i18n="dockGuide">How to Use</span></button>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="shell">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="eyebrow">
+        <span class="eyebrow-pulse"></span>
+        <span data-i18n="heroEyebrow">NEXT-GEN 3D SPATIAL DEFENSE • POWERED BY GOOGLE GEMINI</span>
+      </div>
+      <h1 data-i18n="heroTitle">Expose Digital Deception.<br><span class="gradient-text">Investigate Fraud in Full 3D Space.</span></h1>
+      <p class="hero-copy" data-i18n="heroCopy">
+        Ingest suspicious WhatsApp messages, fake police warrants, SMS alerts, extortion calls, or screenshots.
+        ScamLens reconstructs adversary attack vectors in interactive 3D, maps cognitive manipulation, and arms you with official containment playbooks.
+      </p>
+
+      <!-- Quick Scenario Preset Bar -->
+      <div class="preset-section">
+        <span class="preset-label" data-i18n="presetLabel">REAL-WORLD ATTACK SIMULATION PRESETS:</span>
+        <div class="preset-chips" id="presetChips">
+          <button class="preset-chip" data-preset="arrest" data-i18n="presetArrest">🚨 Digital Arrest (CBI/Police)</button>
+          <button class="preset-chip" data-preset="voice_arrest" data-i18n="presetVoiceArrest">🎙️ CBI Skype Call Simulation</button>
+          <button class="preset-chip" data-preset="task" data-i18n="presetTask">💼 Telegram Daily Task</button>
+          <button class="preset-chip" data-preset="bank_otp" data-i18n="presetBankOtp">🏦 Bank Block OTP Phish</button>
+          <button class="preset-chip" data-preset="fedex" data-i18n="presetFedex">📦 FedEx Customs Narcotics</button>
+          <button class="preset-chip" data-preset="wedding_apk" data-i18n="presetWeddingApk">👰 Wedding Invitation APK</button>
+          <button class="preset-chip" data-preset="electricity" data-i18n="presetElectricity">⚡ Electricity Cutoff</button>
+          <button class="preset-chip" data-preset="sextortion" data-i18n="presetSextortion">📹 Video Call Blackmail</button>
+          <button class="preset-chip" data-preset="crypto" data-i18n="presetCrypto">🪙 300% Crypto Arbitrage</button>
+          <button class="preset-chip safe-chip" data-preset="safe_meeting" data-i18n="presetSafeMeeting">🛡️ Legit Team Meeting</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Interactive Workspace -->
+    <section class="workspace">
+      <!-- Input Panel -->
+      <div class="input-panel glass tilt-3d" id="inputPanel">
+        <div class="card-shine"></div>
+        <div class="panel-head">
+          <div>
+            <span class="step-label" data-i18n="stepLabel1">STAGE 01 // INVESTIGATION CONSOLE</span>
+            <h2 data-i18n="stage1Title">Ingest Suspect Communication</h2>
+          </div>
+          <!-- Mode Tabs: Text vs Image Screenshot vs Voice Call -->
+          <div class="input-mode-tabs" role="tablist">
+            <button class="mode-tab active" id="tabModeText" role="tab" aria-selected="true">
+              <span data-i18n="tabText">✍ Text Message</span>
+            </button>
+            <button class="mode-tab" id="tabModeImage" role="tab" aria-selected="false">
+              <span data-i18n="tabImage">📸 Screenshot (Vision)</span>
+            </button>
+            <button class="mode-tab" id="tabModeVoice" role="tab" aria-selected="false">
+              <span data-i18n="tabVoice">🎙️ Voice Call / Audio</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- E2EE PRIVACY SHIELD & PII REDACTOR BAR -->
+        <div class="privacy-shield-bar">
+          <div class="privacy-shield-left">
+            <span data-i18n="privacyActive">🔒 E2EE PRIVACY SHIELD: ACTIVE</span>
+            <span class="badge-gemini" style="background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4); font-size: 0.7rem;">AES-256-GCM</span>
+          </div>
+          <label class="privacy-toggle-wrap" title="Automatically masks phone numbers, bank accounts, and OTPs before processing">
+            <input type="checkbox" id="piiMaskToggle" checked />
+            <span data-i18n="privacyRedactToggle">Auto-Redact Personal Info (PII)</span>
+          </label>
+        </div>
+
+        <!-- TEXT INPUT MODE -->
+        <div id="textInputContainer">
+          <!-- Message Type Selector -->
+          <div class="type-pills" role="group" aria-label="Message channel">
+            <button class="type-pill active" data-type="whatsapp">◉ WhatsApp</button>
+            <button class="type-pill" data-type="sms">▤ SMS</button>
+            <button class="type-pill" data-type="email">✉ Email</button>
+            <button class="type-pill" data-type="arrest_police">🚨 Police / Arrest</button>
+            <button class="type-pill" data-type="job_offer">💼 Job Offer</button>
+            <button class="type-pill" data-type="crypto">🪙 Crypto / Invest</button>
+            <button class="type-pill" data-type="delivery">📦 Courier / Parcel</button>
+            <button class="type-pill" data-type="voice_call">🎙️ Phone / Extortion</button>
+          </div>
+
+          <div class="field-meta">
+            <label class="field-label" for="messageInput" data-i18n="textInputLabel">ORIGINAL SUSPECT COMMUNICATION</label>
+            <span class="char-counter" id="charCount">0 / 20000</span>
+          </div>
+
+          <div class="textarea-wrapper">
+            <textarea id="messageInput" maxlength="20000" data-i18n-placeholder="textInputPlaceholder" placeholder="Paste suspicious message, SMS, email, APK link or extortion transcript here…&#10;&#10;Tip: Try the real-world presets above for instant fraud simulations." spellcheck="false"></textarea>
+          </div>
+        </div>
+
+        <!-- IMAGE / SCREENSHOT MODE (GEMINI MULTIMODAL VISION) -->
+        <div id="imageInputContainer" class="image-input-container" style="display: none;">
+          <div class="dropzone" id="imageDropzone">
+            <input type="file" id="imageFileInput" accept="image/png, image/jpeg, image/webp" style="display: none;" />
+            <div class="dropzone-content" id="dropzonePrompt">
+              <div class="drop-icon">📷</div>
+              <h3 data-i18n="dropTitle">Drag &amp; Drop Screenshot Here</h3>
+              <p data-i18n="dropSub">Supports WhatsApp chats, fake court notices, SMS alerts, bank warnings, QR codes (PNG, JPEG, WebP)</p>
+              <button class="secondary-button drop-browse-btn" id="browseImageBtn" data-i18n="browseBtn">Browse Computer</button>
+              <div class="drop-subtext" data-i18n="dropKeyHint">Or press <kbd>Ctrl+V</kbd> anywhere to paste screenshot from clipboard</div>
+            </div>
+
+            <!-- Preview Container -->
+            <div class="image-preview-wrap" id="imagePreviewWrap" style="display: none;">
+              <img id="imagePreviewImg" alt="Suspect Screenshot Preview" />
+              <div class="preview-overlay">
+                <span id="imageMetaText">image.png</span>
+                <button class="remove-image-btn" id="removeImageBtn" title="Remove image">×</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- OCR Extracted Text Inspector -->
+          <div class="extracted-text-preview" id="imageOcrPreview" style="display: none;">
+            <div style="font-size: 0.75rem; color: #38bdf8; font-weight: 700; margin-bottom: 4px;">EXTRACTED OCR TEXT FROM IMAGE:</div>
+            <div id="imageOcrTextContent">Extracting text...</div>
+          </div>
+
+          <div class="vision-note">
+            <span class="badge-gemini">GEMINI VISION</span>
+            <span>Multimodal neural OCR transcribes text and evaluates visual seals, logos, and QR codes. Offline fallback active.</span>
+          </div>
+        </div>
+
+        <!-- VOICE / AUDIO LIVE TRANSCRIBER MODE -->
+        <div id="voiceInputContainer" class="voice-input-container" style="display: none;">
+          <div class="voice-console-box">
+            <!-- Real-Time Web Audio Oscilloscope Visualizer -->
+            <div class="audio-visualizer-box">
+              <canvas id="liveAudioVisualizer"></canvas>
+              <div class="audio-recording-overlay" id="audioRecordingOverlay" style="display: none;">
+                <div class="record-pulse-dot"></div>
+                <span id="recordingTimer">LIVE RECORDING • 00:00</span>
+              </div>
+            </div>
+
+            <div class="voice-mic-wrap">
+              <button class="voice-mic-btn" id="micRecordBtn" title="Start / Stop Microphone Recording">
+                <span class="mic-icon">🎙️</span>
+                <div class="mic-wave-ring"></div>
+              </button>
+              <button class="stop-record-btn" id="stopRecordBtn" style="display: none;" title="Stop Recording &amp; Transcribe">
+                <span data-i18n="stopRecordBtn">⏹ STOP RECORDING</span>
+              </button>
+              <div class="mic-status-text" id="micStatusText" data-i18n="micDefault">Click Microphone to Speak &amp; Analyze Acoustics</div>
+            </div>
+
+            <div class="voice-waveform" id="voiceWaveform">
+              <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+              <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+              <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+              <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+            </div>
+
+            <!-- Simulated Phone Call Presets -->
+            <div class="call-sim-presets">
+              <span class="field-label" data-i18n="simCallLabel">OR TEST REALISTIC VOICE CALL FORENSICS:</span>
+              <div class="call-btn-row">
+                <button class="call-sim-btn" data-call-preset="cbi_call">
+                  <span data-i18n="simCbiCall">🚨 CBI Officer Extortion Call</span>
+                </button>
+                <button class="call-sim-btn" data-call-preset="bank_call">
+                  <span data-i18n="simBankCall">🏦 Bank KYC Suspension Call</span>
+                </button>
+                <button class="call-sim-btn" data-call-preset="customs_call">
+                  <span data-i18n="simCustomsCall">📦 FedEx Narcotics Parcel Call</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="textarea-wrapper" style="margin-top: 14px;">
+              <textarea id="voiceTranscriptArea" data-i18n-placeholder="voiceTranscriptPlaceholder" placeholder="Live audio transcript and spoken dialogue will appear here in real time as you speak or run acoustic analysis…"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- GOOGLE RECAPTCHA SHIELD BOX -->
+        <div class="recaptcha-shield-box" id="recaptchaShieldBox">
+          <div class="recaptcha-left">
+            <input type="checkbox" id="recaptchaCheckbox" class="recaptcha-checkbox" checked />
+            <div>
+              <div class="recaptcha-text" id="recaptchaLabel" data-i18n="recaptchaLabel">I am human • Google reCAPTCHA v3 Shield Verified</div>
+              <div class="recaptcha-subtext" style="font-size: 0.72rem; color: var(--text-muted);" data-i18n="recaptchaSub">Protected by Google Fraud Telemetry Engine</div>
+            </div>
+          </div>
+          <div class="recaptcha-badge-wrap">
+            <span style="font-size: 1.1rem;">🛡️</span>
+            <span>reCAPTCHA</span>
+          </div>
+        </div>
+
+        <div class="input-foot">
+          <span class="audit-vault-note">
+            <span class="vault-icon">◈</span> <span data-i18n="vaultNote">Local Vault: Stored locally in encrypted SQLite on this device</span>
+          </span>
+          <button class="text-button" id="clearBtn" data-i18n="clearBtn">Clear All ↗</button>
+        </div>
+
+        <div class="actions-row">
+          <button class="primary-button scan-btn" id="analyzeBtn">
+            <span class="button-spark">✦</span>
+            <span id="analyzeLabel" data-i18n="executeBtn">EXECUTE THREAT INVESTIGATION</span>
+            <span class="button-arrow">→</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 3D Interactive Telemetry Panel -->
+      <aside class="visual-panel glass tilt-3d" id="visualPanel">
+        <div class="card-shine"></div>
+        <div class="panel-head">
+          <div>
+            <span class="step-label">3D CORE // TELEMETRY</span>
+            <h2>Threat Visualizer</h2>
+          </div>
+          <!-- 5 Visualizer Modes -->
+          <div class="visualizer-modes" role="group" aria-label="3D Visualization Mode">
+            <button class="mode-chip active" data-vmode="shield" title="Holographic Defense Shield">🛡️ Shield</button>
+            <button class="mode-chip" data-vmode="globe" title="Global Threat Telemetry Globe">🌐 Globe</button>
+            <button class="mode-chip" data-vmode="neural" title="Neural Risk Matrix">🧠 Neural</button>
+            <button class="mode-chip" data-vmode="tesseract" title="Quantum Threat Tesseract Cube">🛸 Tesseract</button>
+            <button class="mode-chip" data-vmode="sonar" title="3D Sonar Radar Scanner">📡 Sonar</button>
+          </div>
+        </div>
+
+        <!-- 3D Three.js Interactive Canvas Container -->
+        <div class="three-container" id="threeContainer">
+          <canvas id="threatCanvas3d"></canvas>
+          <div class="threat-hud-overlay">
+            <div class="hud-corner top-left">STATE: <span id="hudState">STANDBY</span></div>
+            <div class="hud-corner top-right">FPS: <span id="hudFreq">60</span></div>
+            <div class="hud-center-ring"></div>
+            <div class="hud-corner bottom-left">DEFENSE: <span id="hudDefense">ACTIVE</span></div>
+            <div class="hud-corner bottom-right">3D SPATIAL UI</div>
+          </div>
+
+          <!-- 3D Canvas Interactive Controls Toolbar -->
+          <div class="three-toolbar" role="toolbar" aria-label="3D Camera Controls">
+            <button class="vtool-btn" id="btnZoomIn" title="Zoom In (or Scroll Wheel)">＋</button>
+            <button class="vtool-btn" id="btnZoomOut" title="Zoom Out (or Scroll Wheel)">－</button>
+            <button class="vtool-btn" id="btnResetView" title="Reset Camera Rotation">↺</button>
+            <button class="vtool-btn" id="btnWireframeToggle" title="Toggle Wireframe Shading">◈</button>
+            <button class="vtool-btn" id="btnExplodeToggle" title="Explode / Deconstruct 3D Core">💥</button>
+            <button class="vtool-btn" id="btnFullscreen3D" title="Open Fullscreen 3D Holo-Deck">⛶</button>
+          </div>
+
+          <div class="canvas-hint">Drag 360° to rotate • Wheel to zoom • Double-click resets</div>
+        </div>
+
+        <!-- Dynamic Live Statistics Ticker -->
+        <div class="radar-stats">
+          <div>
+            <span class="stat-number" id="statScanned">00</span>
+            <span class="stat-label">SCANS RUN</span>
+          </div>
+          <div>
+            <span class="stat-number" id="statFlags">—</span>
+            <span class="stat-label">RED FLAGS</span>
+          </div>
+          <div>
+            <span class="stat-number" id="statMode">GEMINI / RULES</span>
+            <span class="stat-label">AI ENGINE</span>
+          </div>
+        </div>
+
+        <div class="visual-foot">
+          <span class="pulse-line"></span>
+          <span id="radarCaption">Spatial sensors primed. Standing by for message input.</span>
+        </div>
+      </aside>
+    </section>
+
+    <!-- INVESTIGATION REPORT (FINDINGS SECTION) -->
+    <section class="results-section" id="resultsSection" hidden>
+      <div class="section-title-row">
+        <div>
+          <span class="step-label" data-i18n="resultsEyebrow">STAGE 02 // INTELLIGENCE DOSSIER</span>
+          <h2 data-i18n="resultsTitle">Forensic Investigation Findings</h2>
+        </div>
+        <div class="report-actions">
+          <button class="secondary-button" id="openEvidencePackBtn">
+            <span>🛡️</span> <span data-i18n="btnEvidence">Generate Formal FIR Evidence Pack</span>
+          </button>
+          <button class="secondary-button" id="speakReportBtn">
+            <span id="speakIcon">🔊</span> <span data-i18n="btnBriefing">Listen to Briefing</span>
+          </button>
+          <button class="secondary-button" id="copyComplaintBtn">
+            <span>📋</span> <span data-i18n="btnCopyComplaint">Copy Quick Complaint</span>
+          </button>
+          <button class="secondary-button" id="downloadBtn">
+            <span>↓</span> <span data-i18n="btnExportJson">Export JSON</span>
+          </button>
+          <button class="secondary-button" id="printBtn">
+            <span>🖨</span> <span data-i18n="btnPrint">Print / PDF</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Verdict Banner -->
+      <div class="verdict-card glass tilt-3d" id="verdictCard">
+        <div class="card-shine"></div>
+        <div class="verdict-symbol" id="verdictSymbol">!</div>
+        <div class="verdict-main">
+          <div class="verdict-badges">
+            <span class="verdict-category-badge" id="scamTypeBadge">Phishing Threat</span>
+            <span class="urgency-badge" id="urgencyBadge">URGENCY: CRITICAL</span>
+            <span class="engine-badge" id="engineBadge">GOOGLE GEMINI</span>
+            <span class="hash-badge" id="evidenceHashBadge">SHA256-PENDING</span>
+          </div>
+          <h3 id="verdictTitle">DANGEROUS</h3>
+          <p id="verdictSummary">Loading assessment…</p>
+        </div>
+        <div class="score-wrap">
+          <div class="score-ring" id="scoreRing">
+            <span id="scoreValue">0</span>
+          </div>
+          <span class="score-caption">RISK INDICATOR <button class="help-dot" title="Heuristic risk indicator (0-100), not a statistical probability.">?</button></span>
+        </div>
+      </div>
+
+      <!-- 5-AXIS THREAT RADAR HEATMAP & STATUTORY VIOLATIONS -->
+      <div class="result-grid radar-statute-grid">
+        <!-- SVG Cyber Spider Radar Chart -->
+        <div class="glass result-card tilt-3d" id="radarHeatmapCard">
+          <div class="card-shine"></div>
+          <div class="card-title">
+            <span class="card-icon">🕸️</span>
+            <div>
+              <h3>5-Axis Threat Radar Heatmap</h3>
+              <p>Multi-dimensional risk exposure across adversary attack vectors</p>
+            </div>
+          </div>
+          <div class="radar-chart-container">
+            <svg id="threatRadarSvg" class="radar-svg" viewBox="0 0 320 280">
+              <!-- Rendered via JS -->
+            </svg>
+            <div class="radar-axis-readouts" id="radarReadouts">
+              <!-- Injected via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Statutory Legal Violations Card -->
+        <div class="glass result-card tilt-3d" id="statutoryCard">
+          <div class="card-shine"></div>
+          <div class="card-title">
+            <span class="card-icon">⚖️</span>
+            <div>
+              <h3>Statutory Legal Infractions</h3>
+              <p>Applicable IT Act, Criminal Code, and Wire Fraud provisions</p>
+            </div>
+          </div>
+          <div class="statutory-list" id="statutoryList">
+            <!-- Dynamic statutory pills -->
+          </div>
+          <div class="evidence-stamp-box">
+            <span class="evidence-fingerprint-label">CRYPTOGRAPHIC EVIDENCE FINGERPRINT</span>
+            <code class="evidence-hash-code" id="evidenceHashCode">SHA256: CALCULATING...</code>
+            <p class="evidence-hint">Timestamped hash preserves evidentiary chain of custody for police or banking disputes.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Acoustic Audio Forensics Card (Shown for Voice Scans) -->
+      <div class="glass result-card tilt-3d" id="acousticForensicCard" style="display: none; margin-bottom: 24px;">
+        <div class="card-shine"></div>
+        <div class="card-title">
+          <span class="card-icon">🎙️</span>
+          <div>
+            <h3 data-i18n="acousticCardTitle">Acoustic Voice Call &amp; Audio Forensics</h3>
+            <p data-i18n="acousticCardSub">Voice stress metrics, synthetic deepfake detection, and background noise profiling</p>
+          </div>
+        </div>
+        <div class="acoustic-forensics-grid">
+          <div class="acoustic-metric-card">
+            <div class="acoustic-metric-lbl" data-i18n="metricStress">Voice Stress Index</div>
+            <div class="acoustic-metric-val" id="acousticStressVal" style="color: #ef4444;">--</div>
+            <div class="stat-label">Intimidation Level</div>
+          </div>
+          <div class="acoustic-metric-card">
+            <div class="acoustic-metric-lbl" data-i18n="metricDeepfake">Deepfake Probability</div>
+            <div class="acoustic-metric-val" id="acousticDeepfakeVal" style="color: #f59e0b;">--</div>
+            <div class="stat-label">AI Clone Risk</div>
+          </div>
+          <div class="acoustic-metric-card">
+            <div class="acoustic-metric-lbl" data-i18n="metricBackground">Background Spoofing</div>
+            <div class="acoustic-metric-val" id="acousticSpoofVal" style="color: #38bdf8;">--</div>
+            <div class="stat-label">Fake Sirens / Chatter</div>
+          </div>
+          <div class="acoustic-metric-card">
+            <div class="acoustic-metric-lbl" data-i18n="metricCoercion">Coercion Cadence</div>
+            <div class="acoustic-metric-val" id="acousticCoercionVal" style="color: #a855f7;">--</div>
+            <div class="stat-label">Boiler Room Pacing</div>
+          </div>
+        </div>
+        <div style="margin-top: 14px;">
+          <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">SPEAKER PROFILE: <span id="acousticSpeakerProfile" style="color: #38bdf8; font-weight: 600;">--</span></div>
+          <p id="acousticSummaryText" style="font-size: 0.85rem; color: var(--text-secondary);">Acoustic telemetry processing...</p>
+        </div>
+        <div class="acoustic-tag-row" id="acousticTagsRow">
+          <!-- Tags injected via JS -->
+        </div>
+      </div>
+
+      <!-- Visual Attack Vector Timeline -->
+      <div class="attack-vector-panel glass tilt-3d" id="attackVectorPanel">
+        <div class="card-shine"></div>
+        <div class="card-title">
+          <span class="card-icon">⚡</span>
+          <div>
+            <h3>Attack Progression Chain</h3>
+            <p>Reconstructed sequence of the adversary's playbook</p>
+          </div>
+        </div>
+        <div class="attack-steps-pipeline" id="attackVectorPipeline">
+          <!-- Injected via JavaScript -->
+        </div>
+      </div>
+
+      <!-- Psychological Manipulation Triggers -->
+      <div class="psych-triggers-panel glass tilt-3d" id="psychTriggersPanel">
+        <div class="card-shine"></div>
+        <div class="card-title">
+          <span class="card-icon">🧠</span>
+          <div>
+            <h3>Psychological Pressure Tactics Detected</h3>
+            <p>Cognitive exploits used to compromise rational judgment</p>
+          </div>
+        </div>
+        <div class="trigger-chips-wrap" id="triggerChipsWrap">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+
+      <!-- Contextual Evidence Grid -->
+      <div class="result-grid">
+        <!-- Message Highlights -->
+        <div class="glass result-card original-card tilt-3d">
+          <div class="card-shine"></div>
+          <div class="card-title">
+            <span class="card-icon">⌁</span>
+            <div>
+              <h3>Evidence Grounding in Context</h3>
+              <p>Exact matched text. Click any highlighted phrase to inspect its reasoning.</p>
+            </div>
+          </div>
+          <div id="highlightedMessage" class="highlighted-message"></div>
+          <div class="legend">
+            <span><i class="legend-dot critical"></i> Critical Hazard</span>
+            <span><i class="legend-dot high"></i> High Risk</span>
+            <span><i class="legend-dot medium"></i> Caution</span>
+          </div>
+        </div>
+
+        <!-- Evidence Breakdown Cards -->
+        <div class="glass result-card tilt-3d">
+          <div class="card-shine"></div>
+          <div class="card-title">
+            <span class="card-icon">✳</span>
+            <div>
+              <h3>Red Flag Breakdown</h3>
+              <p>Specific indicators and why they represent a threat</p>
+            </div>
+          </div>
+          <div id="flagList" class="flag-list"></div>
+        </div>
+      </div>
+
+      <!-- Emergency Action Playbook & Missing Verification Grid -->
+      <div class="result-grid lower-grid">
+        <div class="glass result-card emergency-card tilt-3d">
+          <div class="card-shine"></div>
+          <div class="card-title">
+            <span class="card-icon">🛡️</span>
+            <div>
+              <h3>Emergency Containment Playbook</h3>
+              <p>Critical immediate steps to safeguard money and credentials</p>
+            </div>
+          </div>
+          <div class="playbook-checklist" id="playbookChecklist">
+            <!-- Dynamic checklist -->
+          </div>
+          <div class="helpline-box">
+            <strong>OFFICIAL EMERGENCY HELPLINES:</strong>
+            <div class="helpline-tags">
+              <span>🇮🇳 India: Call <strong>1930</strong> (Cybercrime Portal)</span>
+              <span>🇺🇸 US: FBI IC3 (ic3.gov) / FTC</span>
+              <span>🇬🇧 UK: Action Fraud (0300 123 2040)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass result-card tilt-3d">
+          <div class="card-shine"></div>
+          <div class="card-title">
+            <span class="card-icon">⌕</span>
+            <div>
+              <h3>Missing Verification Elements</h3>
+              <p>What cannot be verified from message text alone</p>
+            </div>
+          </div>
+          <ul id="missingList" class="plain-list"></ul>
+          <div class="card-title" style="margin-top: 20px;">
+            <span class="card-icon">↗</span>
+            <div>
+              <h3>Recommended Next Moves</h3>
+              <p>Practical verification before taking action</p>
+            </div>
+          </div>
+          <ol id="stepsList" class="steps-list"></ol>
+        </div>
+      </div>
+
+      <!-- Limitations Banner -->
+      <div class="limitations glass tilt-3d">
+        <div class="card-shine"></div>
+        <span>ⓘ</span>
+        <div>
+          <strong>Operational Boundaries &amp; Integrity Notice</strong>
+          <p id="limitationsText"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPANDED ANCILLARY TOOL GRID -->
+    <section class="tool-grid" aria-label="Security Utilities">
+      <!-- Tool 02: Link Deep Scanner -->
+      <section class="glass tool-card tilt-3d" id="urlScannerSection">
+        <div class="card-shine"></div>
+        <div class="panel-head">
+          <div>
+            <span class="step-label">TOOL // 02</span>
+            <h2 data-i18n="urlTitle">Deep Link Intelligence</h2>
+          </div>
+          <span class="mini-orbit">↗</span>
+        </div>
+        <p class="tool-description" data-i18n="urlDesc">
+          Inspect domain entropy, punycode spoofing, IP literal hostnames, and deceptive brand mimics offline without opening the link.
+        </p>
+        <label class="field-label" for="urlInput" data-i18n="urlLabel">URL OR HOSTNAME TO SCAN</label>
+        <div class="url-input-wrap">
+          <input id="urlInput" class="url-input" type="text" maxlength="2048" data-i18n-placeholder="urlPlaceholder" placeholder="https://secure-bank-login.xyz/verify" />
+          <button class="primary-button tool-button" id="urlScanBtn" data-i18n="urlBtn">Inspect URL</button>
+        </div>
+        <div id="urlResult" class="tool-output" aria-live="polite" data-i18n="urlDefault">Awaiting URL target.</div>
+      </section>
+
+      <!-- Tool 03: QR Code & UPI Payment Fraud Scanner -->
+      <section class="glass tool-card tilt-3d" id="paymentScannerSection">
+        <div class="card-shine"></div>
+        <div class="panel-head">
+          <div>
+            <span class="step-label">TOOL // 03</span>
+            <h2 data-i18n="paymentTitle">QR &amp; Payment Forensics</h2>
+          </div>
+          <span class="mini-orbit">💳</span>
+        </div>
+        <p class="tool-description" data-i18n="paymentDesc">
+          Unmask deceptive QR codes, reverse-collect UPI debit traps ("Receive money" scam), crypto addresses, and insecure gateways.
+        </p>
+        <label class="field-label" for="paymentInput" data-i18n="paymentLabel">UPI INTENT LINK, VPA, OR PAYMENT PAYLOAD</label>
+        <div class="url-input-wrap">
+          <input id="paymentInput" class="url-input" type="text" maxlength="2048" data-i18n-placeholder="paymentPlaceholder" placeholder="upi://pay?pa=scammer@okaxis&pn=Refund&am=5000" />
+          <button class="primary-button tool-button" id="paymentScanBtn" data-i18n="paymentBtn">Inspect Payment</button>
+        </div>
+        <div id="paymentResult" class="tool-output" aria-live="polite" data-i18n="paymentDefault">Awaiting payment payload or QR string.</div>
+      </section>
+
+      <!-- Tool 04: SMS Header & Telecom Sender ID Inspector -->
+      <section class="glass tool-card tilt-3d" id="senderScannerSection">
+        <div class="card-shine"></div>
+        <div class="panel-head">
+          <div>
+            <span class="step-label">TOOL // 04</span>
+            <h2 data-i18n="senderTitle">SMS Header &amp; Sender ID</h2>
+          </div>
+          <span class="mini-orbit">📱</span>
+        </div>
+        <p class="tool-description" data-i18n="senderDesc">
+          Decode TRAI/DLT telecom circle prefixes, verify genuine institutional banking headers, and flag personal 10-digit mobile impersonations.
+        </p>
+        <label class="field-label" for="senderIdInput" data-i18n="senderLabel">SMS HEADER OR SENDER NUMBER</label>
+        <div class="url-input-wrap">
+          <input id="senderIdInput" class="url-input" type="text" maxlength="30" data-i18n-placeholder="senderPlaceholder" placeholder="e.g. VK-HDFCBK, AD-SBINB, or +923001234567" />
+          <button class="primary-button tool-button" id="senderIdScanBtn" data-i18n="senderBtn">Audit Sender ID</button>
+        </div>
+        <div id="senderIdResult" class="tool-output" aria-live="polite" data-i18n="senderDefault">Awaiting sender header target.</div>
+      </section>
+
+      <!-- Tool 05: Anti-Scam Honeypot & Counter-Bait Simulator -->
+      <section class="glass tool-card tilt-3d" id="honeypotSection">
+        <div class="card-shine"></div>
+        <div class="panel-head">
+          <div>
+            <span class="step-label">TOOL // 05</span>
+            <h2 data-i18n="honeypotTitle">Adversary Counter-Bait Simulator</h2>
+          </div>
+          <span class="mini-orbit">🪤</span>
+        </div>
+        <p class="tool-description" data-i18n="honeypotDesc">
+          Test victim defense responses against scammers to observe their AI psychological retaliation tree and escalation tactics in real time.
+        </p>
+        <div class="honeypot-controls">
+          <label class="field-label" for="honeypotScenarioSelect" data-i18n="honeypotLabel">SELECT FRAUD SCENARIO</label>
+          <select id="honeypotScenarioSelect" class="setting-select">
+            <option value="digital_arrest">🚨 CBI / Police Digital Arrest</option>
+            <option value="task_fraud">💼 Telegram Task Job Scam</option>
+            <option value="bank_kyc">🏦 Bank NetBanking Deactivation</option>
+          </select>
+
+          <label class="field-label" style="margin-top: 10px;" data-i18n="honeypotRespLabel">CHOOSE TACTICAL VICTIM RESPONSE</label>
+          <div class="honeypot-replies-list" id="honeypotRepliesList">
+            <!-- Dynamic response options -->
+          </div>
+        </div>
+        <div id="honeypotResult" class="tool-output" aria-live="polite" data-i18n="honeypotDefault">Select a response above to test adversary psychological retaliation.</div>
+      </section>
+
+      <!-- Tool 06: Interactive Gemini Safety Copilot -->
+      <section class="glass tool-card copilot-card tilt-3d" id="copilotSection">
+        <div class="card-shine"></div>
+        <div class="panel-head">
+          <div>
+            <span class="step-label">TOOL // 06</span>
+            <h2 data-i18n="copilotTitle">Gemini Safety Copilot</h2>
+          </div>
+          <span class="mini-orbit">✦</span>
+        </div>
+        <p class="tool-description" data-i18n="copilotDesc">
+          Ask conversational anti-scam containment questions. The copilot provides step-by-step guidance tailored to your investigation context.
+        </p>
+
+        <!-- Suggested Prompt Pills -->
+        <div class="copilot-pills" id="copilotPills">
+          <button class="copilot-pill">I already paid money. What now?</button>
+          <button class="copilot-pill">I submitted my OTP</button>
+          <button class="copilot-pill">They claim they are police on Skype</button>
+          <button class="copilot-pill">Is this company real?</button>
+        </div>
+
+        <div class="copilot-chat-box" id="copilotChatBox">
+          <div class="copilot-msg bot-msg">
+            <div class="msg-avatar">✦</div>
+            <div class="msg-body">
+              Hello! I'm your Google Gemini Safety Copilot. If you suspect fraud, ask me what to do immediately. Never share real passwords or full cards.
+            </div>
+          </div>
+        </div>
+
+        <div class="copilot-input-row">
+          <textarea id="copilotQuestion" class="copilot-input" maxlength="2000" data-i18n-placeholder="copilotPlaceholder" placeholder="Type your safety question here… (e.g. 'I clicked the link, should I format my phone?')"></textarea>
+          <button class="primary-button copilot-send-btn" id="copilotBtn">
+            <span data-i18n="copilotBtn">Send</span>
+          </button>
+        </div>
+      </section>
+    </section>
+
+    <!-- LOCAL AUDIT VAULT (HISTORY) -->
+    <section class="glass history-panel tilt-3d" id="vaultSection">
+      <div class="card-shine"></div>
+      <div class="section-title-row">
+        <div>
+          <span class="step-label" data-i18n="vaultLabel">AUDIT TRAIL // LOCAL DATABASE</span>
+          <h2 data-i18n="vaultTitle">Investigation History Vault</h2>
+          <p class="tool-description" data-i18n="vaultDesc">
+            Past analyses are persisted locally on this machine inside an encrypted SQLite database. You can search, filter, export, or permanently wipe records.
+          </p>
+        </div>
+        <div class="history-controls">
+          <input type="text" id="historySearchInput" class="history-search" data-i18n-placeholder="historySearchPlaceholder" placeholder="Search saved records…" />
+          <select id="historyFilterSelect" class="history-select">
+            <option value="" data-i18n="optAllVerdicts">All Verdicts</option>
+            <option value="DANGEROUS" data-i18n="optDangerous">Dangerous Only</option>
+            <option value="SUSPICIOUS" data-i18n="optSuspicious">Suspicious Only</option>
+            <option value="SAFE" data-i18n="optSafe">Safe Only</option>
+          </select>
+          <button class="secondary-button" id="refreshHistoryBtn" data-i18n="vaultRefreshBtn">Refresh ↻</button>
+          <button class="secondary-button danger-btn" id="clearAllHistoryBtn" data-i18n="vaultClearBtn">Clear Vault 🗑</button>
+        </div>
+      </div>
+      <div id="historyList" class="history-list">
+        <p class="loading-text">Querying local SQLite vault…</p>
+      </div>
+    </section>
+
+    <!-- Bottom Security Principle Strip -->
+    <section class="bottom-strip glass tilt-3d">
+      <div class="card-shine"></div>
+      <div class="strip-icon">◈</div>
+      <div>
+        <strong>Zero-Trust Cybernetic Architecture</strong>
+        <p>ScamLens is engineered to explain, not merely accuse. Verifiable proofs stay verified; missing evidence remains explicitly acknowledged.</p>
+      </div>
+      <span class="strip-code">SCAMLENS // 3D SPATIAL DEFENSE v3.0</span>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <span>SCAMLENS AI 3D <span class="footer-dot">•</span> SPATIAL FRAUD DEFENSE</span>
+      <span>Integrated with Google Gemini Engine • Three.js 3D Interactive Telemetry Core • Designed for verifiable human safety.</span>
+    </footer>
+  </main>
+
+  <!-- Notification Toast -->
+  <div class="toast" id="toast" role="status"></div>
+
+  <!-- CUSTOMIZATION STUDIO & SETTINGS MODAL -->
+  <dialog id="settingsDialog" class="glass modal-dialog">
+    <div class="dialog-header">
+      <div class="dialog-title-wrap">
+        <span class="step-label">PREFERENCES // CUSTOMIZATION STUDIO</span>
+        <h2>Personalize Your Defense Console</h2>
+      </div>
+      <button class="dialog-close" id="closeSettings">×</button>
+    </div>
+
+    <div class="dialog-body">
+      <!-- Theme Customizer (8 Themes + Custom Palette) -->
+      <div class="setting-group">
+        <label class="setting-label">CYBER THEME PALETTE</label>
+        <div class="theme-options">
+          <button class="theme-btn active" data-theme-name="vision-pro">
+            <span class="theme-swatch" style="background: linear-gradient(135deg, #38bdf8, #c084fc);"></span>
+            <span>Vision Pro (Spatial)</span>
+          </button>
+          <button class="theme-btn" data-theme-name="neon">
+            <span class="theme-swatch" style="background: linear-gradient(135deg, #00e5ff, #a855f7);"></span>
+            <span>Cyber Neon</span>
+          </button>
+          <button class="theme-btn" data-theme-name="matrix">
+            <span class="theme-swatch" style="background: linear-gradient(135deg, #22c55e, #14532d);"></span>
+            <span>Matrix Hacker</span>
+          </button>
+          <button class="theme-btn" data-theme-name="crimson">
+            <span class="theme-swatch" style="background: linear-gradient(135deg, #ef4444, #f97316);"></span>
+            <span>Crimson Alert</span>
+          </button>
+          <button class="theme-btn" data-theme-name="amethyst">
+            <span class="theme-swatch" style="background: linear-gradient(135deg, #c084fc, #6366f1);"></span>
+            <span>Amethyst Void</span>
+          </button>
+          <button class="theme-btn" data-theme-name="titanium">
+            <span class="theme-swatch" style="background: linear-gradient(135deg, #38bdf8, #64748b);"></span>
+            <span>Titanium Ice</span>
+          </button>
+          <button class="theme-btn" data-theme-name="solar">
+            <span class="theme-swatch" style="background: linear-gradient(135deg, #fbbf24, #f97316);"></span>
+            <span>Solar Flare</span>
+          </button>
+          <button class="theme-btn" data-theme-name="stealth">
+            <span class="theme-swatch" style="background: linear-gradient(135deg, #ffffff, #52525b);"></span>
+            <span>Stealth OLED</span>
+          </button>
+          <button class="theme-btn" data-theme-name="custom">
+            <span class="theme-swatch" style="background: conic-gradient(red, yellow, lime, aqua, blue, magenta, red);"></span>
+            <span>Custom Palette</span>
+          </button>
+        </div>
+
+        <!-- Custom Color Palette Builder -->
+        <div class="custom-palette-box" id="customPaletteBox" style="display: none;">
+          <div class="palette-picker-row">
+            <div>
+              <label class="field-label">PRIMARY ACCENT</label>
+              <input type="color" id="customPrimaryColor" value="#00e5ff" />
+            </div>
+            <div>
+              <label class="field-label">SECONDARY ACCENT</label>
+              <input type="color" id="customSecondaryColor" value="#a855f7" />
+            </div>
+            <div>
+              <label class="field-label">PANEL BACKGROUND</label>
+              <input type="color" id="customBgColor" value="#0e142c" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Google Gemini Engine Configuration -->
+      <div class="setting-group">
+        <div class="setting-header-row">
+          <label class="setting-label">GOOGLE GEMINI API CONFIGURATION</label>
+          <span class="setting-tag" id="geminiKeyStatus">Checking .env…</span>
+        </div>
+        <p class="setting-hint">
+          Connect your Google Gemini API key to activate multimodal vision and deep scam reasoning. Key is stored strictly in your browser or read from backend <code>.env</code>.
+        </p>
+        <div class="key-input-row">
+          <input type="password" id="geminiApiKeyInput" class="setting-input" placeholder="AIzaSy... (leave blank to use server .env)" />
+          <button class="secondary-button" id="testGeminiKeyBtn">Verify Key</button>
+        </div>
+        <div class="model-row">
+          <label class="field-label" for="geminiModelSelect">GEMINI MODEL</label>
+          <select id="geminiModelSelect" class="setting-select">
+            <option value="gemini-2.5-flash">Gemini 2.5 Flash (Recommended - Fastest &amp; Multimodal)</option>
+            <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+            <option value="gemini-1.5-pro">Gemini 1.5 Pro (Deepest Reasoning)</option>
+            <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 3D Graphics & Spatial Physics Tuning -->
+      <div class="setting-group">
+        <label class="setting-label">3D GRAPHICS &amp; SPATIAL PHYSICS TUNING</label>
+        
+        <!-- 3D Particle Style -->
+        <div class="model-row" style="margin-bottom: 12px;">
+          <label class="field-label" for="particleStyleSelect">BACKGROUND 3D PARTICLE FIELD STYLE</label>
+          <select id="particleStyleSelect" class="setting-select">
+            <option value="stars">🌌 Deep Space Stars</option>
+            <option value="hexagons">⬡ Cyber Hexagon Dust</option>
+            <option value="matrix">💻 Digital Matrix Rain</option>
+            <option value="plasma">✨ Floating Plasma Orbs</option>
+          </select>
+        </div>
+
+        <div class="slider-control">
+          <div class="slider-label-row">
+            <span>Particle Storm Density</span>
+            <span id="particleDensityVal">Standard (100%)</span>
+          </div>
+          <input type="range" id="particleDensitySlider" min="20" max="300" step="20" value="100" />
+        </div>
+
+        <div class="slider-control">
+          <div class="slider-label-row">
+            <span>3D Core Rotation Velocity</span>
+            <span id="speedVal">1.0x</span>
+          </div>
+          <input type="range" id="speedSlider" min="2" max="30" step="2" value="10" />
+        </div>
+
+        <div class="slider-control">
+          <div class="slider-label-row">
+            <span>3D Card Gyro-Tilt Intensity</span>
+            <span id="tiltIntensityVal">Balanced 3D</span>
+          </div>
+          <input type="range" id="tiltIntensitySlider" min="0" max="20" step="5" value="10" />
+        </div>
+
+        <div class="toggle-control">
+          <span>Undulating 3D Cyber Grid Floor</span>
+          <input type="checkbox" id="gridFloorToggle" checked />
+        </div>
+
+        <div class="toggle-control">
+          <span>Cyber Scanline Grid Filter</span>
+          <input type="checkbox" id="scanlineToggle" checked />
+        </div>
+      </div>
+
+      <!-- Audio FX & Synthesizer Studio -->
+      <div class="setting-group">
+        <label class="setting-label">WEB AUDIO SYNTHESIZER STUDIO</label>
+        <div class="model-row" style="margin-bottom: 12px;">
+          <label class="field-label" for="soundPackSelect">SOUND FX PACK</label>
+          <select id="soundPackSelect" class="setting-select">
+            <option value="cyberpunk">⚡ Cyberpunk Holo-Synth (Default)</option>
+            <option value="minimal">🔹 Clean Minimal Clicks</option>
+            <option value="retro">👾 Retro 8-Bit Arcade</option>
+          </select>
+        </div>
+        <div class="slider-control">
+          <div class="slider-label-row">
+            <span>Sound FX Master Volume</span>
+            <span id="volumeVal">80%</span>
+          </div>
+          <input type="range" id="volumeSlider" min="0" max="100" step="10" value="80" />
+        </div>
+      </div>
+
+      <!-- Language & Profile Import/Export -->
+      <div class="setting-group">
+        <label class="setting-label">ANALYSIS EXPLANATION LANGUAGE</label>
+        <select id="languageSelect" class="setting-select">
+          <option value="en">English (Default)</option>
+          <option value="hi">Hindi (हिन्दी)</option>
+          <option value="hinglish">Hinglish (Hindi in Latin script)</option>
+          <option value="es">Spanish (Español)</option>
+          <option value="fr">French (Français)</option>
+          <option value="de">German (Deutsch)</option>
+        </select>
+      </div>
+
+      <div class="setting-group">
+        <label class="setting-label">PROFILE BACKUP &amp; MIGRATION</label>
+        <div class="profile-actions-row">
+          <button class="secondary-button" id="exportProfileBtn">Export Config (JSON)</button>
+          <button class="secondary-button" id="importProfileBtn">Import Config (JSON)</button>
+          <input type="file" id="importProfileFileInput" accept=".json" style="display: none;" />
+        </div>
+      </div>
+    </div>
+
+    <div class="dialog-footer">
+      <button class="secondary-button" id="resetSettingsBtn">Reset to Defaults</button>
+      <button class="primary-button" id="saveSettingsBtn">Save &amp; Apply</button>
+    </div>
+  </dialog>
+
+  <!-- FORMAL POLICE FIR & BANK EVIDENCE PACK MODAL -->
+  <dialog id="evidenceDialog" class="glass modal-dialog large-modal">
+    <div class="dialog-header">
+      <div class="dialog-title-wrap">
+        <span class="step-label">LEGAL FORENSICS // LAW ENFORCEMENT &amp; BANKING DOSSIER</span>
+        <h2>Formal Incident Complaint Pack</h2>
+      </div>
+      <button class="dialog-close" id="closeEvidenceDialog">×</button>
+    </div>
+    <div class="dialog-body">
+      <p class="setting-hint">
+        This document complies with evidentiary standards for filing an official cyber fraud dispute with your bank,
+        the Indian National Cyber Crime Reporting Portal (1930 / cybercrime.gov.in), FBI IC3, or Action Fraud.
+      </p>
+
+      <div class="evidence-input-grid">
+        <div>
+          <label class="field-label" for="evidenceSuspectSender">SUSPECT SENDER ID / PHONE / EMAIL</label>
+          <input type="text" id="evidenceSuspectSender" class="setting-input" placeholder="e.g. +91 9876543210 or VK-HDFCBK" />
+        </div>
+        <div>
+          <label class="field-label" for="evidenceVictimNotes">VICTIM STATEMENT / MONEY TRANSFERRED (IF ANY)</label>
+          <input type="text" id="evidenceVictimNotes" class="setting-input" placeholder="e.g. Received call from fake police demanding ₹25,000 on UPI." />
+        </div>
+      </div>
+
+      <div class="evidence-preview-wrap">
+        <pre class="evidence-pre" id="evidencePreText">Generating evidence dossier…</pre>
+      </div>
+    </div>
+    <div class="dialog-footer">
+      <button class="secondary-button" id="copyEvidenceTextBtn">📋 Copy Full Complaint</button>
+      <button class="secondary-button" id="downloadEvidenceTxtBtn">↓ Download .TXT</button>
+      <button class="primary-button" id="printEvidenceDocBtn">🖨 Print / PDF</button>
+    </div>
+  </dialog>
+
+  <!-- FULLSCREEN 3D HOLO-DECK MODAL -->
+  <dialog id="holoModal" class="glass holo-modal-dialog">
+    <div class="holo-header">
+      <span class="step-label">IMMERSIVE 3D HOLO-DECK // SPATIAL THREAT TELEMETRY</span>
+      <button class="dialog-close" id="closeHoloModal">×</button>
+    </div>
+    <div class="holo-body">
+      <canvas id="fullscreenCanvas3d"></canvas>
+      <div class="holo-hud">
+        <div class="hud-tag">TARGET: <span id="holoTargetLabel">INVESTIGATION CORE</span></div>
+        <div class="hud-tag">ORBIT: 360° SPATIAL</div>
+        <div class="hud-tag">BEARING: <span id="holoBearing">AZ 142° EL 28°</span></div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- STEP-BY-STEP HOW TO USE SCAMLENS AI INTERACTIVE GUIDE MODAL -->
+  <dialog id="howToUseDialog" class="glass modal-dialog large-modal">
+    <div class="dialog-header">
+      <div class="dialog-title-wrap">
+        <span class="step-label">OPERATIONAL BRIEFING // STEP-BY-STEP PROCESS</span>
+        <h2 data-i18n="guideTitle">How to Use ScamLens AI (Vision Pro Edition)</h2>
+      </div>
+      <button class="dialog-close" id="closeHowToUseDialog">×</button>
+    </div>
+    <div class="dialog-body">
+      <p class="setting-hint" data-i18n="guideSub">
+        Follow these 5 streamlined steps to analyze suspect digital communications, expose malicious vectors, and safeguard your assets.
+      </p>
+
+      <div class="guide-steps-grid">
+        <!-- Step 1 -->
+        <div class="guide-step-card">
+          <div class="guide-step-num">01</div>
+          <div class="guide-step-icon">📥</div>
+          <div class="guide-step-title" data-i18n="step1Title">Ingest Evidence</div>
+          <div class="guide-step-desc" data-i18n="step1Desc">
+            Select an input channel: <strong>Text Message</strong>, <strong>Screenshot (Vision)</strong>, or <strong>Voice Call Audio</strong>. You can paste text, drag-and-drop screenshots, press <kbd>Ctrl+V</kbd>, or record directly from your microphone.
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="guide-step-card">
+          <div class="guide-step-num">02</div>
+          <div class="guide-step-icon">🔒</div>
+          <div class="guide-step-title" data-i18n="step2Title">E2EE Privacy Shield</div>
+          <div class="guide-step-desc" data-i18n="step2Desc">
+            Ensure the <strong>E2EE Privacy Shield</strong> is toggled. Personal details such as phone numbers, bank accounts, and OTPs are automatically redacted and encrypted on your client before analysis.
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="guide-step-card">
+          <div class="guide-step-num">03</div>
+          <div class="guide-step-icon">🛡️</div>
+          <div class="guide-step-title" data-i18n="step3Title">reCAPTCHA Verification</div>
+          <div class="guide-step-desc" data-i18n="step3Desc">
+            Verify the <strong>Google reCAPTCHA Shield</strong> checkbox to validate automated human identity and safeguard the threat analysis pipeline from bot floods.
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="guide-step-card">
+          <div class="guide-step-num">04</div>
+          <div class="guide-step-icon">⚡</div>
+          <div class="guide-step-title" data-i18n="step4Title">Execute Gemini 3D Scan</div>
+          <div class="guide-step-desc" data-i18n="step4Desc">
+            Click <strong>EXECUTE THREAT INVESTIGATION</strong>. Google Gemini and the 3D Telemetry Engine deconstruct psychological manipulation, compute the 5-Axis Threat Radar, and identify red flags.
+          </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="guide-step-card">
+          <div class="guide-step-num">05</div>
+          <div class="guide-step-icon">📋</div>
+          <div class="guide-step-title" data-i18n="step5Title">Action &amp; Containment</div>
+          <div class="guide-step-desc" data-i18n="step5Desc">
+            Download the official <strong>FIR Evidence Pack</strong> for police (1930 / cybercrime.gov.in) and banks, consult the <strong>AI Security Copilot</strong>, or listen to the spoken forensic briefing.
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Test Drive for Judges -->
+      <div class="quick-test-drive-row">
+        <h4 data-i18n="testDriveHeader">⚡ 1-CLICK HACKATHON TEST DRIVE (SELECT A SCENARIO TO TEST INSTANTLY):</h4>
+        <div class="preset-chips" style="margin-top: 8px;">
+          <button class="preset-chip" data-guide-preset="arrest">🚨 CBI Digital Arrest Extortion</button>
+          <button class="preset-chip" data-guide-preset="voice_arrest">🎙️ Skype Interrogation Audio</button>
+          <button class="preset-chip" data-guide-preset="task">💼 Telegram Job Task Trap</button>
+          <button class="preset-chip" data-guide-preset="wedding_apk">👰 Malicious Wedding Card APK</button>
+          <button class="preset-chip safe-chip" data-guide-preset="safe_meeting">🛡️ Legitimate Company Email</button>
+        </div>
+      </div>
+    </div>
+    <div class="dialog-footer">
+      <button class="primary-button" id="startUsingScamLensBtn" data-i18n="startUsingBtn">🚀 Launch Investigation Now</button>
+    </div>
+  </dialog>
+
+  <!-- ABOUT DIALOG -->
+  <dialog id="aboutDialog" class="glass modal-dialog">
+    <div class="dialog-header">
+      <div class="dialog-title-wrap">
+        <span class="step-label">SYSTEM ARCHITECTURE</span>
+        <h2>About ScamLens AI 3D</h2>
+      </div>
+      <button class="dialog-close" id="closeAbout">×</button>
+    </div>
+    <div class="dialog-body">
+      <p>
+        <strong>ScamLens AI 3D v3.0</strong> is an explainable fraud detection and intelligence platform designed to counteract digital deception, social engineering, and extortion syndicates.
+      </p>
+      <p>
+        <strong>Key Architectural Pillars:</strong>
+      </p>
+      <ul>
+        <li><strong>Google Gemini Native Integration:</strong> Deep cognitive reasoning via Google GenAI SDK for verbatim quote extraction, psychological manipulation analysis, and multimodal vision scanning.</li>
+        <li><strong>3D Spatial UI &amp; Three.js Telemetry Core:</strong> Interactive 5-mode spatial threat core (Shield, Globe, Neural, Tesseract, Sonar) with real-time reactive shaders, 3D card tilt physics, and undulating cyber grid floor.</li>
+        <li><strong>5-Axis Threat Radar Heatmap:</strong> Multi-dimensional spider chart quantifying Social Engineering, Authority Coercion, Technical Exploitation, Financial Risk, and Identity Theft.</li>
+        <li><strong>Voice Call &amp; Audio Transcriber:</strong> Real-time Speech-to-Text call listening and simulated extortion call analysis.</li>
+        <li><strong>QR Code &amp; UPI Payment Forensics:</strong> Detects reverse-collect scams, brand spoofing in personal VPAs, and crypto wallet traps.</li>
+        <li><strong>Zero-Hallucination Policy:</strong> Disallows unverified external verification claims; missing evidence remains strictly flagged as unverified.</li>
+        <li><strong>Local-First Audit Vault:</strong> Analysis logs stored strictly on local SQLite without third-party surveillance.</li>
+      </ul>
+    </div>
+  </dialog>
+
+  <!-- Application Logic -->
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "scamlens-ai",
+  "version": "1.0.0",
+  "description": "Glassmorphism 3D scam analysis demo with pluggable LLM API",
+  "scripts": {
+    "start": "python -m uvicorn backend.main:app --reload",
+    "test": "python -m unittest discover -s tests"
+  },
+  "dependencies": [
+    "fastapi",
+    "uvicorn[standard]",
+    "pydantic",
+    "httpx",
+    "python-dotenv",
+    "openai"
+  ]
+}
